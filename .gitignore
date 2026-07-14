@@ -1,0 +1,9 @@
+.venv
+.env
+uv.lock
+pyproject.toml
+notebook.ipynb
+.vscode
+.python-version
+__pycache__
+.ipynb_checkpoints
