@@ -11,38 +11,46 @@ Both implementations use the same knowledge base built from LLM Zoomcamp course 
 Both implementations share the same document processing and indexing pipeline, but differ in how retrieval is orchestrated.
 
 ```mermaid
-flowchart LR
+
+flowchart TB
     subgraph DATA["1. Data Preparation"]
-        direction TB
+        direction LR
         A["GitHub Documentation"] --> B["Load Markdown"]
         B --> C["Chunk Documents"]
         C --> D[("MinSearch Index")]
     end
 
     subgraph BASIC["2. Basic RAG"]
-        direction TB
-        E["User Question"] --> F["Retrieve Documents"]
+        direction LR
+        E["User Question"] --> F["Search"]
         F --> G["Build Context & Prompt"]
         G --> H["OpenAI LLM"]
         H --> I["Final Answer"]
     end
 
     subgraph AGENT["3. Agentic RAG"]
-        direction TB
+        direction LR
         J["User Question"] --> K["OpenAI LLM"]
         K --> L{"Tool call?"}
-        L -->|Yes| M["Execute Search"]
-        M --> N["Return Results"]
-        N --> K
         L -->|No| O["Final Answer"]
+        L -->|Yes| M["Search Tool"]
+        M --> N["Search Results"]
+        N --> K
     end
 
     D -.-> F
     D -.-> M
 
-    style DATA fill:#e8f0fe,stroke:#4285f4,color:#172554
-    style BASIC fill:#f3e8ff,stroke:#9333ea,color:#581c87
-    style AGENT fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef data fill:#DBEAFE,stroke:#2563EB,color:#1E3A8A
+    classDef basic fill:#F3E8FF,stroke:#9333EA,color:#581C87
+    classDef agent fill:#DCFCE7,stroke:#16A34A,color:#14532D
+    classDef decision fill:#FEF3C7,stroke:#D97706,color:#78350F
+
+    class A,B,C,D data
+    class E,F,G,H,I basic
+    class J,K,M,N,O agent
+    class L decision
+
 ```
 
 ### Basic RAG vs Agentic RAG
