@@ -1,9 +1,9 @@
 .venv
 .env
-uv.lock
-pyproject.toml
+.DS_Store
+*.py[cod]
 notebook.ipynb
 .vscode
-.python-version
+
 __pycache__
 .ipynb_checkpoints

@@ -39,15 +39,9 @@ def make_call(call, index):
     arguments = json.loads(call.arguments)
 
     if call.name == "search":
-        result = search(
-            index,
-            **arguments
-        )
+        result = search(index,**arguments)
 
-    result_json = json.dumps(
-        result,
-        indent=2
-    )
+    result_json = json.dumps(result,indent=2)
 
     return {
         "type": "function_call_output",
@@ -65,31 +59,22 @@ def agent_loop(client, index, question, model="gpt-5.4-mini"):
     iteration = 1
     search_calls = 0
 
+    last_answer="Agent stopped before generating a final answer"
+
     while True:
         print(f"Iteration #{iteration}")
 
         has_function_calls = False
 
-        response = client.responses.create(
-            model=model,
-            input=messages,
-            tools=[SEARCH_TOOL]
-        )
+        response = client.responses.create(model=model,input=messages,tools=[SEARCH_TOOL])
 
         messages.extend(response.output)
 
         for item in response.output:
             if item.type == "function_call":
-                print(
-                    "Function call:",
-                    item.name,
-                    item.arguments
-                )
+                print("Function call:",item.name,item.arguments)
 
-                call_output = make_call(
-                    item,
-                    index
-                )
+                call_output = make_call(item,index)
 
                 messages.append(call_output)
                 has_function_calls = True
@@ -102,6 +87,9 @@ def agent_loop(client, index, question, model="gpt-5.4-mini"):
 
         if has_function_calls == False:
             break
+        elif iteration > 5:
+            break
+
 
     return {
         "answer": last_answer,
